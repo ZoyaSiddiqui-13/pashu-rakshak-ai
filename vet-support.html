@@ -1,0 +1,662 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vet Support - Pashu Rakshak AI</title>
+
+    <script>
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .support-container {
+            max-width: 1050px;
+            margin: auto;
+            padding: 45px 20px 70px;
+        }
+
+        .support-header {
+            margin-bottom: 28px;
+        }
+
+        .support-header h1 {
+            color: #1e4d2c;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .support-header p {
+            color: #69736b;
+            line-height: 1.6;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .support-card {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 13px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        .support-card h2 {
+            color: #245c35;
+            font-size: 21px;
+            margin-bottom: 7px;
+        }
+
+        .support-card > p {
+            color: #69736b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #344d3a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d9e2da;
+            border-radius: 8px;
+            background: #fff;
+            color: #344d3a;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #4d8158;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            background: #2f6b3d;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #245c35;
+        }
+
+        .success-message {
+            display: none;
+            margin-top: 16px;
+            padding: 13px 15px;
+            background: #f0f7f1;
+            border: 1px solid #cfe1d1;
+            border-radius: 8px;
+            color: #35643d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* WORKFLOW */
+
+        .workflow {
+            margin-top: 22px;
+        }
+
+        .workflow-item {
+            display: flex;
+            gap: 13px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf0ed;
+        }
+
+        .workflow-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #edf5ee;
+            color: #2f6b3d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .workflow-item strong {
+            display: block;
+            color: #344d3a;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .workflow-item span {
+            color: #69736b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .records-link {
+            display: inline-block;
+            margin-top: 18px;
+            text-decoration: none;
+            color: #2f6b3d;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .support-note {
+            margin-top: 22px;
+            padding: 15px 17px;
+            background: #f5f8f5;
+            border-left: 4px solid #4d8158;
+            border-radius: 7px;
+            color: #59645c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 800px) {
+
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="health-check.html">Health Check</a>
+
+            <a href="disease-map.html">Disease Map</a>
+
+            <a href="records.html">Records</a>
+
+            <a href="vet-support.html">Vet Support</a>
+
+            <select id="language">
+
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+
+            </select>
+
+            <button
+                onclick="logoutUser()"
+                style="
+                    border:none;
+                    background:transparent;
+                    cursor:pointer;
+                    font-size:14px;
+                "
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="support-container">
+
+
+        <div class="support-header">
+
+            <h1>
+                Veterinary Support
+            </h1>
+
+            <p>
+                Submit a consultation request based on
+                the animal's health assessment and receive
+                professional veterinary guidance.
+            </p>
+
+        </div>
+
+
+        <div class="support-grid">
+
+
+            <!-- CONSULTATION FORM -->
+
+            <section class="support-card">
+
+                <h2>
+                    Request Consultation
+                </h2>
+
+                <p>
+                    Provide the basic health details so the
+                    request can be reviewed appropriately.
+                </p>
+
+
+                <form id="vetForm">
+
+
+                    <div class="form-group">
+
+                        <label for="animalId">
+                            Animal ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="animalId"
+                            placeholder="Example: COW001"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="concern">
+                            Health Concern
+                        </label>
+
+                        <input
+                            type="text"
+                            id="concern"
+                            placeholder="Example: Fever and low activity"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="mode">
+                            Consultation Mode
+                        </label>
+
+                        <select id="mode" required>
+
+                            <option value="">
+                                Select consultation mode
+                            </option>
+
+                            <option>
+                                Online Consultation
+                            </option>
+
+                            <option>
+                                Veterinary Clinic Visit
+                            </option>
+
+                            <option>
+                                Farm Visit Request
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="message">
+                            Additional Details
+                        </label>
+
+                        <textarea
+                            id="message"
+                            placeholder="Describe any important symptoms or observations..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                    >
+                        Submit Consultation Request
+                    </button>
+
+
+                    <div
+                        id="successMessage"
+                        class="success-message"
+                    >
+                        Consultation request submitted successfully.
+                        Your request has been saved for follow-up.
+                    </div>
+
+
+                </form>
+
+            </section>
+
+
+            <!-- WORKFLOW -->
+
+            <section class="support-card">
+
+                <h2>
+                    Support Workflow
+                </h2>
+
+                <p>
+                    Connect health assessment results with
+                    veterinary support through a simple process.
+                </p>
+
+
+                <div class="workflow">
+
+
+                    <div class="workflow-item">
+
+                        <div class="step-number">
+                            1
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Run Health Check
+                            </strong>
+
+                            <span>
+                                Analyse the animal's reported
+                                symptoms and behaviour.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="workflow-item">
+
+                        <div class="step-number">
+                            2
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Review Risk Assessment
+                            </strong>
+
+                            <span>
+                                Check the generated risk score
+                                and health concern.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="workflow-item">
+
+                        <div class="step-number">
+                            3
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Submit Request
+                            </strong>
+
+                            <span>
+                                Send the relevant details for
+                                veterinary consultation.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="workflow-item">
+
+                        <div class="step-number">
+                            4
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Review Health Records
+                            </strong>
+
+                            <span>
+                                Use previous assessments to
+                                provide useful health history.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="workflow-item">
+
+                        <div class="step-number">
+                            5
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Follow Veterinary Guidance
+                            </strong>
+
+                            <span>
+                                Take further action according
+                                to professional advice.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <a
+                    href="records.html"
+                    class="records-link"
+                >
+                    View Animal Health Records
+                </a>
+
+
+            </section>
+
+
+        </div>
+
+
+        <div class="support-note">
+
+            <strong>Important:</strong>
+            AI-generated health assessments are preliminary
+            and should not be treated as a professional
+            veterinary diagnosis.
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Pashu Rakshak AI |
+            Livestock Health Monitoring Platform
+        </p>
+
+    </footer>
+
+
+    <!-- FORM SCRIPT -->
+
+    <script>
+
+        const vetForm =
+            document.getElementById("vetForm");
+
+
+        vetForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const request = {
+
+                    animalId:
+                        document
+                        .getElementById("animalId")
+                        .value
+                        .trim(),
+
+                    concern:
+                        document
+                        .getElementById("concern")
+                        .value
+                        .trim(),
+
+                    mode:
+                        document
+                        .getElementById("mode")
+                        .value,
+
+                    message:
+                        document
+                        .getElementById("message")
+                        .value
+                        .trim(),
+
+                    date:
+                        new Date()
+                        .toLocaleString()
+
+                };
+
+
+                const requests =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "consultationRequests"
+                        )
+                    ) || [];
+
+
+                requests.push(request);
+
+
+                localStorage.setItem(
+                    "consultationRequests",
+                    JSON.stringify(requests)
+                );
+
+
+                document
+                    .getElementById("successMessage")
+                    .style.display = "block";
+
+
+                vetForm.reset();
+
+            }
+        );
+
+
+        function logoutUser() {
+
+            localStorage.removeItem(
+                "loggedIn"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    </script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

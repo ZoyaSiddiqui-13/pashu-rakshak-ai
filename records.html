@@ -1,0 +1,630 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Health Records - Pashu Rakshak AI</title>
+
+    <script>
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .records-container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 45px 20px 70px;
+        }
+
+        .records-header {
+            margin-bottom: 28px;
+        }
+
+        .records-header h1 {
+            color: #1e4d2c;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .records-header p {
+            color: #69736b;
+        }
+
+        /* SUMMARY */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        .summary-label {
+            color: #69736b;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .summary-number {
+            font-size: 30px;
+            font-weight: 700;
+            color: #245c35;
+        }
+
+        .healthy {
+            color: #43834d;
+        }
+
+        .attention {
+            color: #927019;
+        }
+
+        /* TABLE */
+
+        .records-box {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 13px;
+            padding: 24px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+            overflow-x: auto;
+        }
+
+        .records-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .records-top h2 {
+            color: #245c35;
+            font-size: 21px;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        .records-table th {
+            padding: 14px 12px;
+            background: #f4f8f4;
+            color: #315b3a;
+            font-size: 13px;
+            text-align: left;
+            border-bottom: 1px solid #dfe6df;
+        }
+
+        .records-table td {
+            padding: 14px 12px;
+            color: #59645c;
+            font-size: 13px;
+            border-bottom: 1px solid #edf0ed;
+            vertical-align: top;
+        }
+
+        .records-table tbody tr:hover td {
+            background: #fafcf9;
+        }
+
+        .animal-id {
+            font-weight: 700;
+            color: #294d32;
+        }
+
+        .risk-status {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .risk-low {
+            color: #43834d;
+        }
+
+        .risk-medium {
+            color: #927019;
+        }
+
+        .risk-high {
+            color: #a33d3d;
+        }
+
+        .score {
+            font-weight: 700;
+            color: #344d3a;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 35px 15px;
+            color: #69736b;
+            display: none;
+        }
+
+        .records-actions {
+            margin-top: 22px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .records-actions a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 750px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .records-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="health-check.html">Health Check</a>
+
+            <a href="disease-map.html">Disease Map</a>
+
+            <a href="records.html">Records</a>
+
+            <a href="vet-support.html">Vet Support</a>
+
+            <select id="language">
+
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+
+            </select>
+
+            <button
+                class="logout-btn"
+                onclick="logoutUser()"
+                style="
+                    border:none;
+                    background:transparent;
+                    cursor:pointer;
+                    font-size:14px;
+                "
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="records-container">
+
+
+        <div class="records-header">
+
+            <h1>
+                Livestock Health Records
+            </h1>
+
+            <p>
+                Review previous health assessments,
+                risk scores and recommended actions.
+            </p>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Total Records
+                </div>
+
+                <div
+                    class="summary-number"
+                    id="totalRecords"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Low Risk
+                </div>
+
+                <div
+                    class="summary-number healthy"
+                    id="healthyRecords"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Requires Attention
+                </div>
+
+                <div
+                    class="summary-number attention"
+                    id="attentionRecords"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- RECORDS -->
+
+        <div class="records-box">
+
+
+            <div class="records-top">
+
+                <h2>
+                    Assessment History
+                </h2>
+
+                <span
+                    id="recordCount"
+                    style="
+                        color:#69736b;
+                        font-size:13px;
+                    "
+                >
+                    0 records
+                </span>
+
+            </div>
+
+
+            <table class="records-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Animal ID
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Symptoms
+                        </th>
+
+                        <th>
+                            Risk
+                        </th>
+
+                        <th>
+                            Score
+                        </th>
+
+                        <th>
+                            Health Concern
+                        </th>
+
+                        <th>
+                            Recommended Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="recordsBody">
+
+                </tbody>
+
+            </table>
+
+
+            <div
+                id="emptyMessage"
+                class="empty-message"
+            >
+                No health records available.
+                Start a health check to create a record.
+            </div>
+
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="records-actions">
+
+            <a
+                href="health-check.html"
+                class="primary-btn"
+            >
+                Start New Health Check
+            </a>
+
+            <a
+                href="vet-support.html"
+                class="secondary-btn"
+            >
+                Veterinary Support
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Pashu Rakshak AI |
+            Livestock Health Monitoring Platform
+        </p>
+
+    </footer>
+
+
+    <!-- RECORDS SCRIPT -->
+
+    <script>
+
+        const records =
+            JSON.parse(
+                localStorage.getItem(
+                    "healthRecords"
+                )
+            ) || [];
+
+
+        /* SUMMARY */
+
+        document.getElementById(
+            "totalRecords"
+        ).innerText =
+            records.length;
+
+
+        const lowRisk =
+            records.filter(
+                record =>
+                    record.status === "Low Risk"
+            ).length;
+
+
+        const attention =
+            records.filter(
+                record =>
+                    record.status === "Medium Risk" ||
+                    record.status === "High Risk"
+            ).length;
+
+
+        document.getElementById(
+            "healthyRecords"
+        ).innerText =
+            lowRisk;
+
+
+        document.getElementById(
+            "attentionRecords"
+        ).innerText =
+            attention;
+
+
+        document.getElementById(
+            "recordCount"
+        ).innerText =
+            records.length +
+            (records.length === 1
+                ? " record"
+                : " records");
+
+
+        /* EMPTY STATE */
+
+        const emptyMessage =
+            document.getElementById(
+                "emptyMessage"
+            );
+
+
+        const recordsBody =
+            document.getElementById(
+                "recordsBody"
+            );
+
+
+        if (records.length === 0) {
+
+            emptyMessage.style.display =
+                "block";
+
+        }
+
+
+        /* TABLE DATA */
+
+        records.forEach(
+            function(record) {
+
+
+                let riskClass =
+                    "risk-low";
+
+
+                if (
+                    record.status === "Medium Risk"
+                ) {
+
+                    riskClass =
+                        "risk-medium";
+
+                }
+
+
+                if (
+                    record.status === "High Risk"
+                ) {
+
+                    riskClass =
+                        "risk-high";
+
+                }
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+                        <span class="animal-id">
+                            ${record.id}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${record.type}
+                    </td>
+
+                    <td>
+                        ${record.date}
+                    </td>
+
+                    <td>
+                        ${record.symptoms}
+                    </td>
+
+                    <td>
+                        <span class="risk-status ${riskClass}">
+                            ${record.status}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="score">
+                            ${record.score || 0}/100
+                        </span>
+                    </td>
+
+                    <td>
+                        ${record.concern ||
+                          "No major concern detected."}
+                    </td>
+
+                    <td>
+                        ${record.action ||
+                          record.remarks ||
+                          "Continue regular monitoring."}
+                    </td>
+
+                `;
+
+
+                recordsBody.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        /* LOGOUT */
+
+        function logoutUser() {
+
+            localStorage.removeItem(
+                "loggedIn"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    </script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

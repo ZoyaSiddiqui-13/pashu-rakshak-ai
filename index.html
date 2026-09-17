@@ -1,0 +1,631 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pashu Rakshak AI | Livestock Health Platform</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* HERO */
+
+        .hero {
+            min-height: 620px;
+            padding: 70px 8%;
+            display: flex;
+            align-items: center;
+            background:
+                linear-gradient(
+                    115deg,
+                    #edf7ef 0%,
+                    #ffffff 72%
+                );
+        }
+
+        .hero-content {
+            max-width: 760px;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 7px 13px;
+            margin-bottom: 18px;
+
+            border: 1px solid #c8ddcc;
+            border-radius: 20px;
+
+            color: #2f7d43;
+            background: #f5faf5;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 5.5vw, 70px);
+            line-height: 1.05;
+            margin-bottom: 22px;
+            color: #1e4d2c;
+        }
+
+        .hero h1 span {
+            color: #4f915d;
+        }
+
+        .hero-description {
+            max-width: 680px;
+            font-size: 17px;
+            color: #5d6961;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        /* LOGIN STRIP */
+
+        .account-strip {
+            max-width: 1050px;
+            margin: -45px auto 55px;
+            padding: 28px 32px;
+
+            position: relative;
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            background: #ffffff;
+            border: 1px solid #e1e7e2;
+            border-radius: 14px;
+
+            box-shadow:
+                0 12px 30px rgba(30, 60, 35, 0.08);
+        }
+
+        .account-strip h3 {
+            color: #245c35;
+            margin-bottom: 4px;
+        }
+
+        .account-strip p {
+            color: #69736b;
+            font-size: 14px;
+        }
+
+        /* SECTION */
+
+        .home-section {
+            max-width: 1150px;
+            margin: auto;
+            padding: 30px 20px 70px;
+        }
+
+        .section-heading {
+            max-width: 650px;
+            margin-bottom: 30px;
+        }
+
+        .section-heading h2 {
+            font-size: 32px;
+            color: #245c35;
+            margin-bottom: 8px;
+        }
+
+        .section-heading p {
+            color: #69736b;
+        }
+
+        /* FEATURE CARDS */
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-box {
+            padding: 26px;
+            background: #ffffff;
+
+            border: 1px solid #e3e8e3;
+            border-radius: 12px;
+
+            transition: 0.2s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 10px 25px rgba(30, 60, 35, 0.08);
+        }
+
+        .feature-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: #5b9365;
+            margin-bottom: 14px;
+        }
+
+        .feature-box h3 {
+            color: #245c35;
+            margin-bottom: 9px;
+        }
+
+        .feature-box p {
+            color: #69736b;
+            font-size: 14px;
+        }
+
+        /* WORKFLOW */
+
+        .workflow-section {
+            background: #eef6ef;
+            padding: 65px 20px;
+        }
+
+        .workflow-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .workflow-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .workflow-title h2 {
+            color: #245c35;
+            margin-bottom: 8px;
+        }
+
+        .workflow-title p {
+            color: #69736b;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .workflow-step {
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 10px;
+            border: 1px solid #dfe8e0;
+            text-align: center;
+        }
+
+        .workflow-step strong {
+            display: block;
+            color: #2f7d43;
+            margin-bottom: 7px;
+        }
+
+        .workflow-step span {
+            font-size: 14px;
+            color: #606b63;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+
+            .feature-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .account-strip {
+                margin: -25px 20px 40px;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .hero {
+                min-height: 540px;
+                padding: 55px 6%;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .account-strip {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .feature-grid,
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="signup.html">
+                Create Account
+            </a>
+
+            <select id="language">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    हिन्दी
+                </option>
+
+                <option value="mr">
+                    मराठी
+                </option>
+
+            </select>
+
+        </div>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-label">
+                AI-BASED LIVESTOCK HEALTH PLATFORM
+            </div>
+
+            <h1>
+                Smarter Livestock Health.
+                <span>Earlier Action.</span>
+            </h1>
+
+            <p class="hero-description">
+                Pashu Rakshak AI helps farmers monitor
+                livestock health, identify early disease
+                risks and maintain digital health records
+                through a simple software platform.
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="health-check.html"
+                    class="primary-btn"
+                >
+                    Check Animal Health
+                </a>
+
+                <a
+                    href="disease-map.html"
+                    class="secondary-btn"
+                >
+                    Explore Disease Map
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACCOUNT STRIP -->
+
+    <div class="account-strip">
+
+        <div>
+
+            <h3>
+                Start monitoring your livestock
+            </h3>
+
+            <p>
+                Create an account to access health
+                analysis, records and veterinary support.
+            </p>
+
+        </div>
+
+        <a
+            href="signup.html"
+            class="primary-btn"
+        >
+            Create Account
+        </a>
+
+    </div>
+
+
+    <!-- FEATURES -->
+
+    <section class="home-section">
+
+        <div class="section-heading">
+
+            <h2>
+                One Platform for Livestock Health
+            </h2>
+
+            <p>
+                A connected software workflow for
+                monitoring, early risk detection and
+                veterinary support.
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    01
+                </div>
+
+                <h3>
+                    AI Health Analysis
+                </h3>
+
+                <p>
+                    Analyse reported symptoms and
+                    behaviour to generate an early
+                    health-risk assessment.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    02
+                </div>
+
+                <h3>
+                    Digital Health Records
+                </h3>
+
+                <p>
+                    Store previous health checks and
+                    review risk scores, concerns and
+                    recommended actions.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    03
+                </div>
+
+                <h3>
+                    Disease Risk Mapping
+                </h3>
+
+                <p>
+                    Visualise sample risk locations
+                    through an interactive geographical
+                    map.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    04
+                </div>
+
+                <h3>
+                    Veterinary Support
+                </h3>
+
+                <p>
+                    Submit consultation requests and
+                    share relevant livestock health
+                    information.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    05
+                </div>
+
+                <h3>
+                    Risk Classification
+                </h3>
+
+                <p>
+                    Classify health conditions into
+                    low, medium and high-risk levels
+                    for easier decision support.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <div class="feature-number">
+                    06
+                </div>
+
+                <h3>
+                    Farmer-Friendly Interface
+                </h3>
+
+                <p>
+                    Simple navigation and clear results
+                    make the platform easy to understand
+                    and use.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- WORKFLOW -->
+
+    <section class="workflow-section">
+
+        <div class="workflow-container">
+
+            <div class="workflow-title">
+
+                <h2>
+                    How Pashu Rakshak AI Works
+                </h2>
+
+                <p>
+                    From health information to
+                    actionable veterinary support.
+                </p>
+
+            </div>
+
+
+            <div class="workflow">
+
+
+                <div class="workflow-step">
+
+                    <strong>
+                        01 — Input
+                    </strong>
+
+                    <span>
+                        Enter animal health
+                        information.
+                    </span>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <strong>
+                        02 — Analyse
+                    </strong>
+
+                    <span>
+                        AI-based risk analysis
+                        processes the information.
+                    </span>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <strong>
+                        03 — Record
+                    </strong>
+
+                    <span>
+                        Results are stored in
+                        digital health records.
+                    </span>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <strong>
+                        04 — Support
+                    </strong>
+
+                    <span>
+                        Use the result for
+                        veterinary consultation.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Pashu Rakshak AI |
+            Livestock Health Monitoring Platform
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

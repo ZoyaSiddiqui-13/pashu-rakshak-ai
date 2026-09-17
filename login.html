@@ -1,0 +1,464 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Pashu Rakshak AI</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f8f5;
+            color: #344d3a;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e3e8e3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 700;
+            color: #245c35;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4d5e50;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #245c35;
+        }
+
+        /* LOGIN AREA */
+
+        .login-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: #ffffff;
+            border: 1px solid #e0e7e1;
+            border-radius: 14px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(30, 60, 35, 0.07);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-header h1 {
+            color: #1e4d2c;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #69736b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #344d3a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d7e0d8;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            color: #344d3a;
+        }
+
+        .form-group input:focus {
+            border-color: #4d8158;
+        }
+
+        .login-btn {
+            width: 100%;
+            border: none;
+            padding: 13px;
+            margin-top: 5px;
+            border-radius: 8px;
+            background: #2f6b3d;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #245c35;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error {
+            background: #fff3f3;
+            border: 1px solid #eccaca;
+            color: #9b4141;
+        }
+
+        .success {
+            background: #f0f7f1;
+            border: 1px solid #cfe1d1;
+            color: #35643d;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 22px;
+            color: #69736b;
+            font-size: 13px;
+        }
+
+        .signup-link a {
+            color: #2f6b3d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .login-note {
+            margin-top: 22px;
+            padding: 13px;
+            background: #f5f8f5;
+            border-radius: 7px;
+            text-align: center;
+            color: #69736b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 500px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .login-card {
+                padding: 28px 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="signup.html">
+                Create Account
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- LOGIN -->
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+
+            <div class="login-header">
+
+                <h1>
+                    Welcome Back
+                </h1>
+
+                <p>
+                    Sign in to access your livestock
+                    health monitoring dashboard.
+                </p>
+
+            </div>
+
+
+            <form id="loginForm">
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Sign In
+                </button>
+
+
+                <div
+                    id="errorMessage"
+                    class="message error"
+                >
+                </div>
+
+
+                <div
+                    id="successMessage"
+                    class="message success"
+                >
+                    Login successful. Redirecting...
+                </div>
+
+
+            </form>
+
+
+            <div class="signup-link">
+
+                Don't have an account?
+                <a href="signup.html">
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <div class="login-note">
+
+                Your account provides access to health
+                assessments, records, disease surveillance
+                and veterinary support.
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+
+        loginForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const email =
+                    document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+
+                const password =
+                    document
+                    .getElementById("password")
+                    .value;
+
+
+                const savedEmail =
+                    localStorage.getItem(
+                        "userEmail"
+                    );
+
+
+                const savedPassword =
+                    localStorage.getItem(
+                        "userPassword"
+                    );
+
+
+                const errorMessage =
+                    document.getElementById(
+                        "errorMessage"
+                    );
+
+
+                const successMessage =
+                    document.getElementById(
+                        "successMessage"
+                    );
+
+
+                errorMessage.style.display =
+                    "none";
+
+
+                successMessage.style.display =
+                    "none";
+
+
+                if (
+                    !savedEmail ||
+                    !savedPassword
+                ) {
+
+                    errorMessage.innerText =
+                        "No account found. Please create an account first.";
+
+                    errorMessage.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+
+                if (
+                    email === savedEmail &&
+                    password === savedPassword
+                ) {
+
+                    localStorage.setItem(
+                        "loggedIn",
+                        "true"
+                    );
+
+
+                    successMessage.style.display =
+                        "block";
+
+
+                    setTimeout(
+                        function() {
+
+                            window.location.href =
+                                "dashboard.html";
+
+                        },
+                        700
+                    );
+
+
+                } else {
+
+                    errorMessage.innerText =
+                        "Invalid email or password. Please try again.";
+
+                    errorMessage.style.display =
+                        "block";
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
+```
