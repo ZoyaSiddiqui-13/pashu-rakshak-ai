@@ -1,0 +1,577 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Disease Surveillance - Pashu Rakshak AI</title>
+
+    <script>
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .map-container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 45px 20px 70px;
+        }
+
+        .map-header {
+            margin-bottom: 25px;
+        }
+
+        .map-header h1 {
+            color: #1e4d2c;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .map-header p {
+            color: #69736b;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .map-controls input,
+        .map-controls select {
+            padding: 12px 14px;
+            border: 1px solid #d9e2da;
+            border-radius: 8px;
+            background: #fff;
+            color: #344d3a;
+            outline: none;
+        }
+
+        .map-controls input {
+            flex: 1;
+            min-width: 230px;
+        }
+
+        .map-controls input:focus,
+        .map-controls select:focus {
+            border-color: #4d8158;
+        }
+
+        .map-box {
+            background: #fff;
+            border: 1px solid #e3e8e3;
+            border-radius: 13px;
+            padding: 10px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        #diseaseMap {
+            height: 500px;
+            width: 100%;
+            border-radius: 9px;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .risk-card {
+            background: #fff;
+            border: 1px solid #e3e8e3;
+            border-radius: 11px;
+            padding: 20px;
+        }
+
+        .risk-card h3 {
+            margin-bottom: 8px;
+            color: #315b3a;
+            font-size: 17px;
+        }
+
+        .risk-card p {
+            color: #69736b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .risk-count {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .low-count {
+            color: #43834d;
+        }
+
+        .medium-count {
+            color: #927019;
+        }
+
+        .high-count {
+            color: #a33d3d;
+        }
+
+        .map-note {
+            margin-top: 20px;
+            padding: 15px 17px;
+            background: #f5f8f5;
+            border-left: 4px solid #4d8158;
+            border-radius: 7px;
+            color: #59645c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 750px) {
+
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #diseaseMap {
+                height: 400px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="health-check.html">Health Check</a>
+
+            <a href="disease-map.html">Disease Map</a>
+
+            <a href="records.html">Records</a>
+
+            <a href="vet-support.html">Vet Support</a>
+
+            <select id="language">
+
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+
+            </select>
+
+            <button
+                onclick="logoutUser()"
+                style="
+                    border:none;
+                    background:transparent;
+                    cursor:pointer;
+                    font-size:14px;
+                "
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="map-container">
+
+
+        <div class="map-header">
+
+            <h1>
+                Disease Surveillance Map
+            </h1>
+
+            <p>
+                Monitor suspected livestock health risks
+                across different locations.
+            </p>
+
+        </div>
+
+
+        <!-- CONTROLS -->
+
+        <div class="map-controls">
+
+            <input
+                type="text"
+                id="locationSearch"
+                placeholder="Search location..."
+            >
+
+            <select id="riskFilter">
+
+                <option value="All">
+                    All Risk Levels
+                </option>
+
+                <option value="High Risk">
+                    High Risk
+                </option>
+
+                <option value="Medium Risk">
+                    Medium Risk
+                </option>
+
+                <option value="Low Risk">
+                    Low Risk
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- MAP -->
+
+        <div class="map-box">
+
+            <div id="diseaseMap"></div>
+
+        </div>
+
+
+        <!-- RISK SUMMARY -->
+
+        <div class="risk-grid">
+
+
+            <div class="risk-card">
+
+                <div
+                    class="risk-count low-count"
+                    id="lowCount"
+                >
+                    0
+                </div>
+
+                <h3>
+                    Low Risk Areas
+                </h3>
+
+                <p>
+                    Locations with fewer reported
+                    health-risk indicators.
+                </p>
+
+            </div>
+
+
+            <div class="risk-card">
+
+                <div
+                    class="risk-count medium-count"
+                    id="mediumCount"
+                >
+                    0
+                </div>
+
+                <h3>
+                    Medium Risk Areas
+                </h3>
+
+                <p>
+                    Locations requiring closer
+                    livestock health monitoring.
+                </p>
+
+            </div>
+
+
+            <div class="risk-card">
+
+                <div
+                    class="risk-count high-count"
+                    id="highCount"
+                >
+                    0
+                </div>
+
+                <h3>
+                    High Risk Areas
+                </h3>
+
+                <p>
+                    Locations requiring prompt
+                    veterinary attention.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="map-note">
+
+            <strong>Demo Data:</strong>
+            The displayed locations are sample data
+            for demonstration of the disease surveillance
+            feature. In a real deployment, verified
+            livestock health reports would be used.
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Pashu Rakshak AI |
+            Livestock Health Monitoring Platform
+        </p>
+
+    </footer>
+
+
+    <!-- LEAFLET -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <script>
+
+        /* MAP */
+
+        const map =
+            L.map("diseaseMap")
+            .setView([22.9734, 78.6569], 5);
+
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+
+        /* DEMO LOCATIONS */
+
+        const locations = [
+
+            {
+                city: "Mumbai",
+                lat: 19.0760,
+                lng: 72.8777,
+                risk: "Medium Risk",
+                cases: 12
+            },
+
+            {
+                city: "Pune",
+                lat: 18.5204,
+                lng: 73.8567,
+                risk: "High Risk",
+                cases: 21
+            },
+
+            {
+                city: "Nagpur",
+                lat: 21.1458,
+                lng: 79.0882,
+                risk: "Low Risk",
+                cases: 5
+            },
+
+            {
+                city: "Ahmedabad",
+                lat: 23.0225,
+                lng: 72.5714,
+                risk: "Medium Risk",
+                cases: 10
+            },
+
+            {
+                city: "Bhopal",
+                lat: 23.2599,
+                lng: 77.4126,
+                risk: "High Risk",
+                cases: 18
+            }
+
+        ];
+
+
+        let markers = [];
+
+
+        /* MARKERS */
+
+        function showMarkers() {
+
+            markers.forEach(
+                marker => map.removeLayer(marker)
+            );
+
+            markers = [];
+
+
+            const search =
+                document
+                .getElementById("locationSearch")
+                .value
+                .toLowerCase();
+
+
+            const filter =
+                document
+                .getElementById("riskFilter")
+                .value;
+
+
+            locations.forEach(
+                function(location) {
+
+                    const matchesSearch =
+                        location.city
+                        .toLowerCase()
+                        .includes(search);
+
+
+                    const matchesRisk =
+                        filter === "All" ||
+                        location.risk === filter;
+
+
+                    if (
+                        matchesSearch &&
+                        matchesRisk
+                    ) {
+
+                        const marker =
+                            L.marker([
+                                location.lat,
+                                location.lng
+                            ]).addTo(map);
+
+
+                        marker.bindPopup(`
+                            <strong>${location.city}</strong><br>
+                            Risk Level: ${location.risk}<br>
+                            Reported Indicators: ${location.cases}
+                        `);
+
+
+                        markers.push(marker);
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* SUMMARY */
+
+        document.getElementById(
+            "lowCount"
+        ).innerText =
+            locations.filter(
+                location =>
+                    location.risk === "Low Risk"
+            ).length;
+
+
+        document.getElementById(
+            "mediumCount"
+        ).innerText =
+            locations.filter(
+                location =>
+                    location.risk === "Medium Risk"
+            ).length;
+
+
+        document.getElementById(
+            "highCount"
+        ).innerText =
+            locations.filter(
+                location =>
+                    location.risk === "High Risk"
+            ).length;
+
+
+        /* FILTER EVENTS */
+
+        document
+        .getElementById("locationSearch")
+        .addEventListener(
+            "input",
+            showMarkers
+        );
+
+
+        document
+        .getElementById("riskFilter")
+        .addEventListener(
+            "change",
+            showMarkers
+        );
+
+
+        showMarkers();
+
+
+        /* LOGOUT */
+
+        function logoutUser() {
+
+            localStorage.removeItem(
+                "loggedIn"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    </script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

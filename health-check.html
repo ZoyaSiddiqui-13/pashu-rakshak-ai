@@ -1,0 +1,543 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check - Pashu Rakshak AI</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .health-page {
+            padding: 50px 20px;
+            background: #f5f8f5;
+            min-height: calc(100vh - 80px);
+        }
+
+        .health-container {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .health-card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        }
+
+        .health-card h2 {
+            margin-bottom: 8px;
+        }
+
+        .health-card p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5ddd5;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .analyse-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2f7d32;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .analyse-btn:hover {
+            background: #256628;
+        }
+
+        .result-box {
+            min-height: 350px;
+        }
+
+        .result-placeholder {
+            text-align: center;
+            padding: 80px 20px;
+            color: #777;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 7px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .low-risk {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .medium-risk {
+            background: #fff4d6;
+            color: #9a6b00;
+        }
+
+        .high-risk {
+            background: #fdeaea;
+            color: #c62828;
+        }
+
+        .score-section {
+            margin: 15px 0 25px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .score-bar {
+            height: 10px;
+            background: #e5e5e5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            width: 0;
+            background: #2f7d32;
+            transition: width 0.5s ease;
+        }
+
+        .result-details {
+            display: grid;
+            gap: 14px;
+        }
+
+        .detail-item {
+            padding: 13px;
+            background: #f7f9f7;
+            border-radius: 8px;
+        }
+
+        .detail-item strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .result-actions a {
+            text-decoration: none;
+        }
+
+        .secondary-btn {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 8px;
+            background: #edf3ed;
+            color: #2f7d32;
+            font-weight: 600;
+        }
+
+        .disclaimer {
+            max-width: 1100px;
+            margin: 20px auto 0;
+            padding: 15px 18px;
+            background: #fffdf3;
+            border-left: 4px solid #d5a800;
+            color: #666;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .health-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="dashboard.html" class="logo">Pashu Rakshak AI</a>
+
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-check.html">Health Check</a>
+            <a href="records.html">Records</a>
+            <a href="disease-map.html">Disease Map</a>
+            <a href="vet-support.html">Vet Support</a>
+
+            <select id="languageSelector" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="mr">Marathi</option>
+            </select>
+
+            <button onclick="logoutUser()" class="nav-logout">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<section class="health-page">
+
+    <div class="health-container">
+
+        <!-- Animal Information -->
+        <div class="health-card">
+
+            <h2>Animal Health Check</h2>
+            <p>Enter animal information and symptoms for an AI-based preliminary risk assessment.</p>
+
+            <div class="form-group">
+                <label for="animalId">Animal ID</label>
+                <input
+                    type="text"
+                    id="animalId"
+                    placeholder="Example: COW001"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="animalType">Animal Type</label>
+
+                <select id="animalType">
+
+                    <option value="">Select Animal Type</option>
+
+                    <option value="Cow">Cow</option>
+                    <option value="Buffalo">Buffalo</option>
+                    <option value="Goat">Goat</option>
+                    <option value="Sheep">Sheep</option>
+                    <option value="Horse">Horse</option>
+                    <option value="Donkey">Donkey</option>
+                    <option value="Camel">Camel</option>
+                    <option value="Pig">Pig</option>
+                    <option value="Chicken">Chicken</option>
+                    <option value="Duck">Duck</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Rabbit">Rabbit</option>
+                    <option value="Yak">Yak</option>
+                    <option value="Mithun">Mithun</option>
+                    <option value="Mule">Mule</option>
+                    <option value="Deer">Deer</option>
+                    <option value="Reindeer">Reindeer</option>
+                    <option value="Alpaca">Alpaca</option>
+                    <option value="Llama">Llama</option>
+                    <option value="Quail">Quail</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="symptoms">Symptoms / Behaviour</label>
+
+                <textarea
+                    id="symptoms"
+                    placeholder="Example: fever, low activity, loss of appetite..."
+                ></textarea>
+            </div>
+
+            <button class="analyse-btn" onclick="runHealthAnalysis()">
+                Analyse Health
+            </button>
+
+        </div>
+
+
+        <!-- Analysis Result -->
+        <div class="health-card result-box">
+
+            <h2>Analysis Result</h2>
+            <p>AI-generated preliminary health risk assessment.</p>
+
+            <div id="resultContent">
+
+                <div class="result-placeholder">
+                    <p>
+                        Enter the animal details and click
+                        <strong>Analyse Health</strong> to view the result.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="disclaimer">
+        <strong>Note:</strong>
+        This platform provides preliminary AI-based risk assessment.
+        It is not a professional veterinary diagnosis.
+    </div>
+
+</section>
+
+
+<script src="script.js"></script>
+
+<script>
+
+function runHealthAnalysis() {
+
+    const animalId = document.getElementById("animalId").value.trim();
+    const animalType = document.getElementById("animalType").value;
+    const symptoms = document.getElementById("symptoms").value.trim().toLowerCase();
+
+    if (!animalId || !animalType || !symptoms) {
+
+        alert("Please enter Animal ID, Animal Type and Symptoms.");
+
+        return;
+    }
+
+
+    const highRiskKeywords = [
+        "severe",
+        "blood",
+        "unable to stand",
+        "very weak",
+        "high fever",
+        "difficulty breathing",
+        "breathing problem"
+    ];
+
+    const mediumRiskKeywords = [
+        "fever",
+        "cough",
+        "coughing",
+        "low activity",
+        "reduced activity",
+        "loss of appetite",
+        "not eating",
+        "diarrhea",
+        "vomiting",
+        "weakness"
+    ];
+
+
+    let highMatches = 0;
+    let mediumMatches = 0;
+
+
+    highRiskKeywords.forEach(keyword => {
+
+        if (symptoms.includes(keyword)) {
+            highMatches++;
+        }
+
+    });
+
+
+    mediumRiskKeywords.forEach(keyword => {
+
+        if (symptoms.includes(keyword)) {
+            mediumMatches++;
+        }
+
+    });
+
+
+    let status;
+    let score;
+    let concern;
+    let action;
+
+
+    if (highMatches > 0) {
+
+        status = "High Risk";
+        score = Math.min(95, 75 + (highMatches * 8));
+
+        concern = "Possible serious health condition";
+
+        action = "Immediate veterinary attention is recommended.";
+
+    }
+
+    else if (mediumMatches > 0) {
+
+        status = "Medium Risk";
+        score = Math.min(70, 40 + (mediumMatches * 7));
+
+        concern = "Possible early-stage health issue";
+
+        action = "Monitor the animal closely and consider veterinary consultation.";
+
+    }
+
+    else {
+
+        status = "Low Risk";
+        score = 20;
+
+        concern = "No major risk indicators detected";
+
+        action = "Continue regular monitoring and maintain routine care.";
+
+    }
+
+
+    let riskClass = "";
+
+    if (status === "Low Risk") {
+        riskClass = "low-risk";
+    }
+
+    else if (status === "Medium Risk") {
+        riskClass = "medium-risk";
+    }
+
+    else {
+        riskClass = "high-risk";
+    }
+
+
+    const resultContent = document.getElementById("resultContent");
+
+
+    resultContent.innerHTML = `
+
+        <span class="risk-badge ${riskClass}">
+            ${status}
+        </span>
+
+        <div class="score-section">
+
+            <div class="score-header">
+                <span>Risk Score</span>
+                <span>${score}/100</span>
+            </div>
+
+            <div class="score-bar">
+                <div
+                    class="score-fill"
+                    style="width: ${score}%"
+                ></div>
+            </div>
+
+        </div>
+
+
+        <div class="result-details">
+
+            <div class="detail-item">
+                <strong>Animal</strong>
+                ${animalId} — ${animalType}
+            </div>
+
+            <div class="detail-item">
+                <strong>Possible Health Concern</strong>
+                ${concern}
+            </div>
+
+            <div class="detail-item">
+                <strong>Recommended Action</strong>
+                ${action}
+            </div>
+
+            <div class="detail-item">
+                <strong>Veterinary Advice</strong>
+                Professional veterinary consultation should be considered based on the animal's condition.
+            </div>
+
+        </div>
+
+
+        <div class="result-actions">
+
+            <a href="records.html" class="secondary-btn">
+                View Records
+            </a>
+
+            <a href="vet-support.html" class="secondary-btn">
+                Vet Support
+            </a>
+
+        </div>
+
+    `;
+
+
+    // Save record
+    let records = JSON.parse(
+        localStorage.getItem("healthRecords") || "[]"
+    );
+
+
+    const newRecord = {
+
+        id: animalId,
+        type: animalType,
+        symptoms: symptoms,
+        status: status,
+        score: score,
+        concern: concern,
+        action: action,
+        remarks: action,
+        date: new Date().toLocaleString()
+
+    };
+
+
+    records.unshift(newRecord);
+
+
+    // Keep maximum 50 records
+    if (records.length > 50) {
+        records = records.slice(0, 50);
+    }
+
+
+    localStorage.setItem(
+        "healthRecords",
+        JSON.stringify(records)
+    );
+
+}
+
+</script>
+
+</body>
+</html>
+```
