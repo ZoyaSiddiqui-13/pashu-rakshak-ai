@@ -1,0 +1,13 @@
+import express from "express";
+import multer from "multer";
+import Animal from "../models/Animal.js";
+import Farm from "../models/Farm.js";
+import {auth,requireRole} from "../middleware/auth.js";
+const router=express.Router();
+const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:1.5*1024*1024}});
+const imageData=f=>f?`data:${f.mimetype};base64,${f.buffer.toString("base64")}`:"";
+router.get("/",auth,async(req,res)=>{const filter=req.user.role==="farmer"?{owner:req.user._id}:{};res.json(await Animal.find(filter).populate("farm","name city state").sort({createdAt:-1}));});
+router.post("/",auth,requireRole("farmer"),upload.single("photo"),async(req,res)=>{const farm=await Farm.findOne({_id:req.body.farm,owner:req.user._id});if(!farm)return res.status(403).json({message:"Farm does not belong to this account"});const animal=await Animal.create({owner:req.user._id,farm:farm._id,tagId:req.body.tagId,name:req.body.name,species:req.body.species,breed:req.body.breed,gender:req.body.gender,dateOfBirth:req.body.dateOfBirth||undefined,age:req.body.age,weightKg:req.body.weightKg?Number(req.body.weightKg):undefined,colorMarkings:req.body.colorMarkings,photoUrl:imageData(req.file),vaccinationStatus:req.body.vaccinationStatus||"Not recorded"});res.status(201).json(await animal.populate("farm","name city state"));});
+router.patch("/:id/vaccination",auth,requireRole("farmer"),async(req,res)=>{const animal=await Animal.findOneAndUpdate({_id:req.params.id,owner:req.user._id},{vaccinationStatus:req.body.status},{new:true}).populate("farm","name city state");if(!animal)return res.status(404).json({message:"Animal not found"});res.json(animal);});
+router.delete("/:id",auth,requireRole("farmer"),async(req,res)=>{const a=await Animal.findOneAndDelete({_id:req.params.id,owner:req.user._id});if(!a)return res.status(404).json({message:"Animal not found"});res.json({ok:true});});
+export default router;

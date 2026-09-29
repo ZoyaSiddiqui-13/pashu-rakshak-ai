@@ -1,0 +1,465 @@
+```css
+/* ================================
+   PASHU RAKSHAK AI
+   PROFESSIONAL GLOBAL STYLES
+================================ */
+
+
+/* RESET */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f6f8f6;
+    color: #1f2a23;
+    line-height: 1.6;
+}
+
+
+/* ================================
+   NAVBAR
+================================ */
+
+.navbar {
+    width: 100%;
+    min-height: 70px;
+    padding: 0 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e6e9e6;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+
+.logo {
+    font-size: 21px;
+    font-weight: 700;
+    color: #245c35;
+    white-space: nowrap;
+}
+
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+
+.nav-links a {
+    color: #39443d;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.2s ease;
+}
+
+
+.nav-links a:hover {
+    color: #2f7d43;
+}
+
+
+.nav-links select {
+    padding: 8px 10px;
+
+    border: 1px solid #d9dfda;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #39443d;
+
+    cursor: pointer;
+}
+
+
+.logout-btn {
+    color: #a33d3d;
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.hero {
+    min-height: 540px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 70px 8%;
+
+    background:
+        linear-gradient(
+            120deg,
+            #eef7ef 0%,
+            #ffffff 65%
+        );
+}
+
+
+.hero-content {
+    max-width: 720px;
+}
+
+
+.hero h1 {
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.08;
+
+    color: #1d4d2b;
+
+    margin-bottom: 22px;
+}
+
+
+.hero h1 span {
+    color: #4b8d57;
+}
+
+
+.hero p {
+    max-width: 650px;
+
+    color: #5e6861;
+
+    font-size: 17px;
+
+    margin-bottom: 30px;
+}
+
+
+.hero-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+.primary-btn,
+.secondary-btn {
+    display: inline-block;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.primary-btn {
+    background: #2f7d43;
+    color: #ffffff;
+    border: 1px solid #2f7d43;
+}
+
+
+.primary-btn:hover {
+    background: #256936;
+}
+
+
+.secondary-btn {
+    background: #ffffff;
+    color: #2f7d43;
+
+    border: 1px solid #b8cdbb;
+}
+
+
+.secondary-btn:hover {
+    background: #eef7ef;
+}
+
+
+/* ================================
+   GENERAL SECTIONS
+================================ */
+
+section {
+    width: 100%;
+}
+
+
+.container {
+    max-width: 1150px;
+    margin: auto;
+    padding: 60px 20px;
+}
+
+
+.section-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+
+.section-title h2 {
+    font-size: 32px;
+    color: #245c35;
+    margin-bottom: 8px;
+}
+
+
+.section-title p {
+    color: #68736b;
+}
+
+
+/* ================================
+   CARDS
+================================ */
+
+.card,
+.feature-card,
+.info-card,
+.summary-card,
+.vet-card,
+.risk-card {
+    background: #ffffff;
+
+    border: 1px solid #e4e8e4;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 18px rgba(30, 60, 35, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.card:hover,
+.feature-card:hover,
+.info-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(30, 60, 35, 0.09);
+}
+
+
+/* ================================
+   FEATURE GRID
+================================ */
+
+.features-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+
+.feature-card {
+    padding: 25px;
+}
+
+
+.feature-card h3 {
+    color: #245c35;
+    margin-bottom: 9px;
+}
+
+
+.feature-card p {
+    color: #667169;
+    font-size: 14px;
+}
+
+
+/* ================================
+   FORMS
+================================ */
+
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+
+    border-color: #4f915d;
+
+    box-shadow:
+        0 0 0 3px rgba(79, 145, 93, 0.10);
+}
+
+
+input,
+textarea,
+select {
+    transition: 0.2s ease;
+}
+
+
+/* ================================
+   TABLE
+================================ */
+
+table {
+    background: #ffffff;
+}
+
+
+th {
+    color: #2b5635;
+}
+
+
+tr:hover td {
+    background: #fafcf9;
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+footer {
+    margin-top: 60px;
+
+    padding: 28px 20px;
+
+    text-align: center;
+
+    background: #203b28;
+
+    color: #dce8de;
+
+    font-size: 13px;
+}
+
+
+/* ================================
+   RESPONSIVE NAVBAR
+================================ */
+
+@media (max-width: 1050px) {
+
+    .navbar {
+        padding: 15px 4%;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 750px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 12px;
+    }
+
+
+    .nav-links a {
+        font-size: 13px;
+    }
+
+
+    .hero {
+        min-height: 480px;
+        padding: 55px 6%;
+    }
+
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+
+    .hero p {
+        font-size: 15px;
+    }
+
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ================================
+   SMALL MOBILE
+================================ */
+
+@media (max-width: 500px) {
+
+    .nav-links {
+        flex-direction: column;
+    }
+
+
+    .hero {
+        padding: 45px 5%;
+    }
+
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+
+    .primary-btn,
+    .secondary-btn {
+        text-align: center;
+        width: 100%;
+    }
+
+}
+```

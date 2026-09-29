@@ -1,30 +1,68 @@
-# PASHU-RAKSHAK AI — Live-ready demo
+# PASHU-RAKSHAK AI — 10/10 Production-Ready Build
 
-Built from the supplied Advanced Master Blueprint. The blueprint calls for Farmer + Super Admin roles, farmer-owned farms/animals/health/vaccination/vet workflows, platform-wide admin operations, AI risk workflow, GIS disease map, QR animal IDs, alerts, analytics, multilingual UI and responsive/mobile support.
+A mobile-first livestock health surveillance and farm management platform.
 
-## Demo login
-Farmer: `farmer@pashurakshak.demo` / `Farmer@123`
-Super Admin: `admin@pashurakshak.demo` / `Admin@123`
+## Architecture
+- React + Vite frontend
+- Express + MongoDB/Mongoose backend
+- JWT authentication + bcrypt password hashing
+- Exactly two public login roles: Farmer and Super Admin
+- Super Admin creates Staff/Veterinarian accounts
+- Farmer data is owner-scoped: Farmer → Farm → Animal → Health Record
+- Farm and animal photos are stored as small data-URI images in MongoDB so the Vercel deployment does not depend on an ephemeral server filesystem
+- AI disease detection is an early-warning symptom classifier, not a veterinary diagnosis
+- English / Hindi / Marathi UI
+- Responsive desktop + mobile navigation
+- Vercel-ready single-domain `/api` deployment
 
-## Deploy
-Push this folder to GitHub, import it into Vercel, and deploy. It is a static Vercel-ready app; no build step is required.
+## Local setup
+1. Copy `backend/.env.example` to `backend/.env`.
+2. Put your MongoDB Atlas connection string in `MONGODB_URL`.
+3. Change `JWT_SECRET` to a long random value.
+4. Keep the admin values or change them.
+5. Install and run:
 
-## Included
-- Farmer and Super Admin login areas
-- Responsive desktop/tablet/mobile UI
-- Dashboard KPIs, alerts and health risk
-- Farms, animals, health records, vaccination, treatment workflow
-- Preliminary AI disease-risk assessment
-- Disease/GIS map using Leaflet + OpenStreetMap
-- Veterinary requests and Emergency SOS
-- QR Animal ID generation in-browser
-- Reports and analytics
-- Admin: farmers, staff/vets, farms, animals, cases, alerts, AI monitoring, disease management, campaigns, reports, audit logs, settings
-- English/Hindi/Marathi UI selector
-- Browser localStorage persistence for demo records
-- Open-Meteo weather card
+```bash
+npm run install-all
+npm run dev
+```
 
-## Important production note
-This package is designed to go live immediately as a functional prototype/demo. Authentication and data persistence are browser-local for the no-backend deployment. For a real multi-user production system, connect the included UI to a server/API and database, then enforce the ownership/role rules described in the blueprint on the server.
+Frontend: `http://localhost:5173`
+Backend: `http://localhost:5000`
 
-AI results are preliminary and must not be treated as veterinary diagnosis.
+The first backend startup creates the Super Admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` if it does not already exist.
+
+## Default local Super Admin
+- Email: `admin@pashurakshak.ai`
+- Password: `Admin@12345`
+
+Change these values before any real/public deployment.
+
+## Vercel deployment
+This repository is prepared for a single Vercel project. The Express API is exposed through `api/index.js` and the frontend is built to `frontend/dist`.
+
+Add these Vercel Environment Variables:
+
+- `MONGODB_URL` — MongoDB Atlas connection string
+- `JWT_SECRET` — long random secret
+- `ADMIN_NAME`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `CLIENT_URL` — your Vercel URL (or leave unset for same-origin deployment)
+
+Then deploy the project root. The frontend uses `/api` automatically when `VITE_API_URL` is not set.
+
+## MongoDB Atlas network access
+For a Vercel deployment, MongoDB Atlas must allow connections from your deployed backend. For a college/demo deployment you can temporarily allow `0.0.0.0/0`, but use a restricted production network policy where practical.
+
+## Security notes
+- Never commit `.env` or real MongoDB credentials.
+- Passwords are never stored in plain text in MongoDB.
+- Farmer records are queried using the authenticated owner ID.
+- Super Admin is the only public role with system-wide access.
+- Staff/Veterinarian accounts are not separate public login roles.
+
+## Feature map
+Farmer: Dashboard, Farms, Animals, Health Records, Vaccination, AI Disease Detection, Disease Map, Alerts, Veterinary Support, Reports & Analytics, Voice Assistant, Profile.
+
+Super Admin: Dashboard, Farmers, Staff & Veterinarians, All Farms, All Animals, Health Cases, Disease Map, Reports, System Settings.

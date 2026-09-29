@@ -1,0 +1,11 @@
+import express from "express";
+import multer from "multer";
+import Farm from "../models/Farm.js";
+import {auth,requireRole} from "../middleware/auth.js";
+const router=express.Router();
+const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:1.5*1024*1024}});
+const imageData=f=>f?`data:${f.mimetype};base64,${f.buffer.toString("base64")}`:"";
+router.get("/",auth,async(req,res)=>{const filter=req.user.role==="farmer"?{owner:req.user._id}:{};res.json(await Farm.find(filter).sort({createdAt:-1}));});
+router.post("/",auth,requireRole("farmer"),upload.single("photo"),async(req,res)=>{const farm=await Farm.create({owner:req.user._id,name:req.body.name,farmType:req.body.farmType,address:req.body.address,village:req.body.village,city:req.body.city,state:req.body.state,pincode:req.body.pincode,contact:req.body.contact,latitude:req.body.latitude?Number(req.body.latitude):undefined,longitude:req.body.longitude?Number(req.body.longitude):undefined,photoUrl:imageData(req.file)});res.status(201).json(farm);});
+router.delete("/:id",auth,requireRole("farmer"),async(req,res)=>{const farm=await Farm.findOneAndDelete({_id:req.params.id,owner:req.user._id});if(!farm)return res.status(404).json({message:"Farm not found"});res.json({ok:true});});
+export default router;

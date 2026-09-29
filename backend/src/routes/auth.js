@@ -1,0 +1,13 @@
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import {auth} from "../middleware/auth.js";
+const router=express.Router();
+const sign=user=>jwt.sign({id:user._id,role:user.role},process.env.JWT_SECRET,{expiresIn:"7d"});
+const safe=u=>({id:u._id,name:u.name,email:u.email,mobile:u.mobile||"",role:u.role,language:u.language||"en"});
+router.post("/register",async(req,res)=>{const {name,email,mobile,password,language}=req.body;if(!name||!email||!password)return res.status(400).json({message:"Name, email and password are required"});if(await User.findOne({email:email.toLowerCase()}))return res.status(409).json({message:"Email already registered"});const user=await User.create({name,email:email.toLowerCase(),mobile,passwordHash:await bcrypt.hash(password,12),language,role:"farmer"});res.status(201).json({token:sign(user),user:safe(user)});});
+router.post("/login",async(req,res)=>{const {email,password,role}=req.body;const user=await User.findOne({email:email?.toLowerCase()});if(!user||!user.active||!(await bcrypt.compare(password,user.passwordHash)))return res.status(401).json({message:"Invalid credentials"});if(role!==user.role&&(role==="farmer"||role==="super_admin"))return res.status(403).json({message:role==="farmer"?"Use Farmer login for this account":"Super Admin access required"});res.json({token:sign(user),user:safe(user)});});
+router.get("/me",auth,(req,res)=>res.json({user:safe(req.user)}));
+router.patch("/me",auth,async(req,res)=>{const updates={};for(const k of ["name","mobile","language"]){if(req.body[k]!==undefined)updates[k]=req.body[k]}const u=await User.findByIdAndUpdate(req.user._id,updates,{new:true});res.json({user:safe(u)});});
+export default router;

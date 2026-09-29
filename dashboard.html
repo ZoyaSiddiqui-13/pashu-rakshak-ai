@@ -1,0 +1,1072 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Pashu Rakshak AI</title>
+
+    <script>
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .dashboard-container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 45px 20px 70px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h1 {
+            color: #1e4d2c;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .dashboard-header p {
+            color: #69736b;
+        }
+
+        .demo-box {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 13px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        .demo-box h3 {
+            color: #245c35;
+            margin-bottom: 7px;
+            font-size: 18px;
+        }
+
+        .demo-box p {
+            color: #69736b;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .demo-btn {
+            border: none;
+            background: #2f6b3d;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .demo-btn:hover {
+            background: #245c35;
+        }
+
+        .demo-status {
+            display: none;
+            margin-top: 13px;
+            color: #35643d;
+            background: #f0f7f1;
+            border: 1px solid #cfe1d1;
+            padding: 10px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        .stat-label {
+            color: #69736b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            color: #245c35;
+        }
+
+        .medium {
+            color: #927019;
+        }
+
+        .high {
+            color: #a33d3d;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 22px;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-card {
+            background: #ffffff;
+            border: 1px solid #e3e8e3;
+            border-radius: 13px;
+            padding: 24px;
+            box-shadow: 0 5px 18px rgba(30, 60, 35, 0.05);
+        }
+
+        .dashboard-card h2 {
+            color: #245c35;
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        .alert-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #edf0ed;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item strong {
+            color: #344d3a;
+            font-size: 14px;
+        }
+
+        .alert-item p {
+            color: #69736b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .risk-low {
+            color: #43834d;
+            font-weight: 700;
+        }
+
+        .risk-medium {
+            color: #927019;
+            font-weight: 700;
+        }
+
+        .risk-high {
+            color: #a33d3d;
+            font-weight: 700;
+        }
+
+        .quick-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quick-actions a {
+            text-decoration: none;
+            padding: 13px 14px;
+            border: 1px solid #e0e7e1;
+            border-radius: 8px;
+            color: #315b3a;
+            font-size: 13px;
+            font-weight: 600;
+            background: #fafcf9;
+        }
+
+        .quick-actions a:hover {
+            background: #f0f6f1;
+            border-color: #cbdccc;
+        }
+
+        .status-guide {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .guide-item {
+            padding: 15px;
+            background: #f8faf8;
+            border-radius: 8px;
+        }
+
+        .guide-item strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .guide-item span {
+            color: #69736b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .empty-alert {
+            color: #69736b;
+            font-size: 13px;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-guide {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Pashu Rakshak AI
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="health-check.html">Health Check</a>
+
+            <a href="disease-map.html">Disease Map</a>
+
+            <a href="records.html">Records</a>
+
+            <a href="vet-support.html">Vet Support</a>
+
+            <select id="language">
+
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+
+            </select>
+
+            <button
+                onclick="logoutUser()"
+                style="
+                    border:none;
+                    background:transparent;
+                    cursor:pointer;
+                    font-size:14px;
+                    color:#4d5e50;
+                "
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-container">
+
+
+        <!-- HEADER -->
+
+        <div class="dashboard-header">
+
+            <h1 id="welcomeTitle">
+                Livestock Health Dashboard
+            </h1>
+
+            <p>
+                Monitor livestock health assessments,
+                risks and veterinary support from one place.
+            </p>
+
+        </div>
+
+
+        <!-- DEMO DATA -->
+
+        <div class="demo-box">
+
+            <h3>
+                Demonstration Data
+            </h3>
+
+            <p>
+                Add 20 sample livestock records to
+                demonstrate the health monitoring,
+                risk assessment and record management features.
+            </p>
+
+            <button
+                class="demo-btn"
+                onclick="addDemoAnimals()"
+            >
+                Add 20 Demo Animals
+            </button>
+
+            <div
+                id="demoStatus"
+                class="demo-status"
+            ></div>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Health Checks
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="totalChecks"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Low Risk
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="lowRisk"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Medium Risk
+                </div>
+
+                <div
+                    class="stat-number medium"
+                    id="mediumRisk"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    High Risk
+                </div>
+
+                <div
+                    class="stat-number high"
+                    id="highRisk"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- DASHBOARD GRID -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- ALERTS -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    Recent Health Alerts
+                </h2>
+
+                <div id="recentAlerts">
+
+                </div>
+
+            </section>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <div class="quick-actions">
+
+                    <a href="health-check.html">
+                        Start Health Check
+                    </a>
+
+                    <a href="records.html">
+                        View Health Records
+                    </a>
+
+                    <a href="disease-map.html">
+                        Explore Disease Map
+                    </a>
+
+                    <a href="vet-support.html">
+                        Request Vet Support
+                    </a>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- STATUS GUIDE -->
+
+        <section class="dashboard-card">
+
+            <h2>
+                Risk Status Guide
+            </h2>
+
+            <div class="status-guide">
+
+
+                <div class="guide-item">
+
+                    <strong class="risk-low">
+                        Low Risk
+                    </strong>
+
+                    <span>
+                        No major health concern detected.
+                        Continue regular monitoring.
+                    </span>
+
+                </div>
+
+
+                <div class="guide-item">
+
+                    <strong class="risk-medium">
+                        Medium Risk
+                    </strong>
+
+                    <span>
+                        Health indicators require closer
+                        monitoring and possible consultation.
+                    </span>
+
+                </div>
+
+
+                <div class="guide-item">
+
+                    <strong class="risk-high">
+                        High Risk
+                    </strong>
+
+                    <span>
+                        Serious indicators detected.
+                        Prompt veterinary attention is recommended.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Pashu Rakshak AI |
+            Livestock Health Monitoring Platform
+        </p>
+
+    </footer>
+
+
+    <!-- DASHBOARD SCRIPT -->
+
+    <script>
+
+        /* USER NAME */
+
+        const userName =
+            localStorage.getItem("userName");
+
+
+        if (userName) {
+
+            document.getElementById(
+                "welcomeTitle"
+            ).innerText =
+                "Welcome, " + userName;
+
+        }
+
+
+        /* GET RECORDS */
+
+        function getRecords() {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    "healthRecords"
+                )
+            ) || [];
+
+        }
+
+
+        /* UPDATE DASHBOARD */
+
+        function updateDashboard() {
+
+            const records =
+                getRecords();
+
+
+            const total =
+                records.length;
+
+
+            const low =
+                records.filter(
+                    record =>
+                        record.status === "Low Risk"
+                ).length;
+
+
+            const medium =
+                records.filter(
+                    record =>
+                        record.status === "Medium Risk"
+                ).length;
+
+
+            const high =
+                records.filter(
+                    record =>
+                        record.status === "High Risk"
+                ).length;
+
+
+            document.getElementById(
+                "totalChecks"
+            ).innerText = total;
+
+
+            document.getElementById(
+                "lowRisk"
+            ).innerText = low;
+
+
+            document.getElementById(
+                "mediumRisk"
+            ).innerText = medium;
+
+
+            document.getElementById(
+                "highRisk"
+            ).innerText = high;
+
+
+            /* RECENT ALERTS */
+
+            const alertContainer =
+                document.getElementById(
+                    "recentAlerts"
+                );
+
+
+            alertContainer.innerHTML = "";
+
+
+            if (records.length === 0) {
+
+                alertContainer.innerHTML = `
+                    <div class="empty-alert">
+                        No health assessments available yet.
+                        Start a health check to create records.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            const recent =
+                [...records]
+                .reverse()
+                .slice(0, 5);
+
+
+            recent.forEach(
+                function(record) {
+
+
+                    let riskClass =
+                        "risk-low";
+
+
+                    if (
+                        record.status === "Medium Risk"
+                    ) {
+
+                        riskClass =
+                            "risk-medium";
+
+                    }
+
+
+                    if (
+                        record.status === "High Risk"
+                    ) {
+
+                        riskClass =
+                            "risk-high";
+
+                    }
+
+
+                    const alert =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    alert.className =
+                        "alert-item";
+
+
+                    alert.innerHTML = `
+
+                        <strong>
+                            ${record.id}
+                            —
+                            ${record.type}
+                        </strong>
+
+                        <p>
+                            <span class="${riskClass}">
+                                ${record.status}
+                            </span>
+                            |
+                            Score: ${record.score || 0}/100
+                        </p>
+
+                        <p>
+                            ${record.concern || record.symptoms}
+                        </p>
+
+                    `;
+
+
+                    alertContainer.appendChild(
+                        alert
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ADD 20 DEMO ANIMALS */
+
+        function addDemoAnimals() {
+
+
+            const demoAnimals = [
+
+                {
+                    id: "COW001",
+                    type: "Cow",
+                    symptoms: "Normal activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW002",
+                    type: "Cow",
+                    symptoms: "Normal appetite and activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW003",
+                    type: "Cow",
+                    symptoms: "Normal behaviour",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW004",
+                    type: "Cow",
+                    symptoms: "Slightly reduced activity",
+                    status: "Medium Risk",
+                    score: 47,
+                    concern: "Possible early health issue.",
+                    action: "Monitor closely and consider veterinary advice."
+                },
+
+                {
+                    id: "COW005",
+                    type: "Cow",
+                    symptoms: "Normal activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW006",
+                    type: "Cow",
+                    symptoms: "Fever and low activity",
+                    status: "Medium Risk",
+                    score: 54,
+                    concern: "Possible fever-related condition.",
+                    action: "Monitor symptoms and consult a veterinarian if symptoms continue."
+                },
+
+                {
+                    id: "COW007",
+                    type: "Cow",
+                    symptoms: "Normal eating behaviour",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW008",
+                    type: "Cow",
+                    symptoms: "Cough",
+                    status: "Medium Risk",
+                    score: 47,
+                    concern: "Possible respiratory issue.",
+                    action: "Monitor breathing and seek veterinary advice if symptoms worsen."
+                },
+
+                {
+                    id: "COW009",
+                    type: "Cow",
+                    symptoms: "Normal behaviour",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "COW010",
+                    type: "Cow",
+                    symptoms: "Normal activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "BUF001",
+                    type: "Buffalo",
+                    symptoms: "Fever and low activity",
+                    status: "Medium Risk",
+                    score: 54,
+                    concern: "Possible fever-related condition.",
+                    action: "Monitor symptoms and consult a veterinarian if symptoms continue."
+                },
+
+                {
+                    id: "BUF002",
+                    type: "Buffalo",
+                    symptoms: "Reduced activity and loss of appetite",
+                    status: "Medium Risk",
+                    score: 54,
+                    concern: "Possible digestive or general health issue.",
+                    action: "Monitor food intake and seek veterinary advice."
+                },
+
+                {
+                    id: "BUF003",
+                    type: "Buffalo",
+                    symptoms: "Normal activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "BUF004",
+                    type: "Buffalo",
+                    symptoms: "Severe weakness",
+                    status: "High Risk",
+                    score: 83,
+                    concern: "Serious health concern detected.",
+                    action: "Seek veterinary attention promptly."
+                },
+
+                {
+                    id: "BUF005",
+                    type: "Buffalo",
+                    symptoms: "Normal behaviour",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "GOAT001",
+                    type: "Goat",
+                    symptoms: "Cough and reduced activity",
+                    status: "Medium Risk",
+                    score: 54,
+                    concern: "Possible respiratory or general health issue.",
+                    action: "Monitor symptoms and consider veterinary consultation."
+                },
+
+                {
+                    id: "GOAT002",
+                    type: "Goat",
+                    symptoms: "Severe weakness and difficulty breathing",
+                    status: "High Risk",
+                    score: 95,
+                    concern: "Possible serious respiratory condition.",
+                    action: "Seek veterinary attention promptly."
+                },
+
+                {
+                    id: "GOAT003",
+                    type: "Goat",
+                    symptoms: "Normal activity",
+                    status: "Low Risk",
+                    score: 20,
+                    concern: "No major concern detected.",
+                    action: "Continue regular monitoring."
+                },
+
+                {
+                    id: "SHP001",
+                    type: "Sheep",
+                    symptoms: "High fever and weakness",
+                    status: "High Risk",
+                    score: 91,
+                    concern: "Possible serious infection or illness.",
+                    action: "Seek veterinary attention promptly."
+                },
+
+                {
+                    id: "SHP002",
+                    type: "Sheep",
+                    symptoms: "Difficulty breathing",
+                    status: "High Risk",
+                    score: 83,
+                    concern: "Possible serious respiratory condition.",
+                    action: "Seek veterinary attention promptly."
+                }
+
+            ];
+
+
+            let records =
+                getRecords();
+
+
+            const existingIds =
+                records.map(
+                    record => record.id
+                );
+
+
+            const newAnimals =
+                demoAnimals.filter(
+                    animal =>
+                        !existingIds.includes(
+                            animal.id
+                        )
+                );
+
+
+            const today =
+                new Date().toLocaleDateString();
+
+
+            newAnimals.forEach(
+                function(animal) {
+
+                    records.push({
+
+                        id: animal.id,
+
+                        type: animal.type,
+
+                        symptoms: animal.symptoms,
+
+                        status: animal.status,
+
+                        score: animal.score,
+
+                        concern: animal.concern,
+
+                        action: animal.action,
+
+                        remarks: animal.action,
+
+                        date: today
+
+                    });
+
+                }
+            );
+
+
+            localStorage.setItem(
+                "healthRecords",
+                JSON.stringify(records)
+            );
+
+
+            const status =
+                document.getElementById(
+                    "demoStatus"
+                );
+
+
+            if (newAnimals.length === 0) {
+
+                status.innerText =
+                    "The 20 demo animals are already added.";
+
+            } else {
+
+                status.innerText =
+                    newAnimals.length +
+                    " demo animal records added successfully.";
+
+            }
+
+
+            status.style.display =
+                "block";
+
+
+            updateDashboard();
+
+        }
+
+
+        /* LOGOUT */
+
+        function logoutUser() {
+
+            localStorage.removeItem(
+                "loggedIn"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+        /* INITIAL LOAD */
+
+        updateDashboard();
+
+    </script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

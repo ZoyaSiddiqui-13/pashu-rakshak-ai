@@ -1,0 +1,568 @@
+```javascript
+// ==========================================
+// PASHU RAKSHAK AI - MAIN JAVASCRIPT
+// ==========================================
+
+
+// ==========================================
+// LOGIN PROTECTION
+// ==========================================
+
+const protectedPages = [
+    "dashboard.html",
+    "health-check.html",
+    "records.html",
+    "disease-map.html",
+    "vet-support.html"
+];
+
+const currentPage =
+    window.location.pathname.split("/").pop();
+
+if (
+    protectedPages.includes(currentPage) &&
+    localStorage.getItem("loggedIn") !== "true"
+) {
+    window.location.href = "login.html";
+}
+
+
+// ==========================================
+// LANGUAGE SYSTEM
+// ==========================================
+
+const translations = {
+
+    en: {
+
+        home: "Home",
+        dashboard: "Dashboard",
+        health: "Health Check",
+        map: "Disease Map",
+        records: "Records",
+        vet: "Vet Support",
+
+        checkHealth: "Check Animal Health",
+        viewMap: "View Disease Map",
+
+        lowRisk: "Low Risk",
+        mediumRisk: "Medium Risk",
+        highRisk: "High Risk",
+
+        analyse: "Analyse Health",
+
+        totalChecks: "Total Checks",
+        healthRecords: "Health Records",
+
+        logout: "Logout"
+
+    },
+
+
+    hi: {
+
+        home: "होम",
+        dashboard: "डैशबोर्ड",
+        health: "स्वास्थ्य जांच",
+        map: "रोग मानचित्र",
+        records: "रिकॉर्ड",
+        vet: "पशु चिकित्सक सहायता",
+
+        checkHealth: "पशु स्वास्थ्य जांचें",
+        viewMap: "रोग मानचित्र देखें",
+
+        lowRisk: "कम जोखिम",
+        mediumRisk: "मध्यम जोखिम",
+        highRisk: "उच्च जोखिम",
+
+        analyse: "स्वास्थ्य जांचें",
+
+        totalChecks: "कुल जांच",
+        healthRecords: "स्वास्थ्य रिकॉर्ड",
+
+        logout: "लॉगआउट"
+
+    },
+
+
+    mr: {
+
+        home: "मुख्यपृष्ठ",
+        dashboard: "डॅशबोर्ड",
+        health: "आरोग्य तपासणी",
+        map: "रोग नकाशा",
+        records: "नोंदी",
+        vet: "पशुवैद्यकीय मदत",
+
+        checkHealth: "प्राण्याचे आरोग्य तपासा",
+        viewMap: "रोग नकाशा पहा",
+
+        lowRisk: "कमी धोका",
+        mediumRisk: "मध्यम धोका",
+        highRisk: "जास्त धोका",
+
+        analyse: "आरोग्य तपासा",
+
+        totalChecks: "एकूण तपासण्या",
+        healthRecords: "आरोग्य नोंदी",
+
+        logout: "लॉगआउट"
+
+    }
+
+};
+
+
+// ==========================================
+// CHANGE LANGUAGE
+// ==========================================
+
+function changeLanguage(language) {
+
+    localStorage.setItem(
+        "selectedLanguage",
+        language
+    );
+
+    const t =
+        translations[language];
+
+    if (!t) return;
+
+
+    // Navbar links
+
+    const navLinks =
+        document.querySelectorAll(
+            ".nav-links a"
+        );
+
+
+    if (navLinks.length > 0) {
+
+        if (navLinks[0])
+            navLinks[0].innerText = t.home;
+
+        if (navLinks[1])
+            navLinks[1].innerText = t.dashboard;
+
+        if (navLinks[2])
+            navLinks[2].innerText = t.health;
+
+        if (navLinks[3])
+            navLinks[3].innerText = t.map;
+
+        if (navLinks[4])
+            navLinks[4].innerText = t.records;
+
+        if (navLinks[5])
+            navLinks[5].innerText = t.vet;
+
+    }
+
+
+    // Logout button
+
+    const logoutButton =
+        document.querySelector(
+            ".logout-btn"
+        );
+
+    if (logoutButton) {
+
+        logoutButton.innerText =
+            t.logout;
+
+    }
+
+
+    // Health Check buttons
+
+    const primaryButtons =
+        document.querySelectorAll(
+            ".primary-btn"
+        );
+
+
+    primaryButtons.forEach(
+        function(button) {
+
+            if (
+                button.innerText.includes(
+                    "Analyse"
+                ) ||
+                button.innerText.includes(
+                    "Health"
+                )
+            ) {
+
+                if (
+                    button.innerText
+                        .toLowerCase()
+                        .includes("analyse")
+                ) {
+
+                    button.innerText =
+                        t.analyse;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    // Save language
+
+    localStorage.setItem(
+        "selectedLanguage",
+        language
+    );
+
+}
+
+
+// ==========================================
+// LANGUAGE SELECTOR
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const languageSelect =
+            document.getElementById(
+                "language"
+            );
+
+
+        const savedLanguage =
+            localStorage.getItem(
+                "selectedLanguage"
+            ) || "en";
+
+
+        if (languageSelect) {
+
+            languageSelect.value =
+                savedLanguage;
+
+
+            languageSelect.addEventListener(
+                "change",
+                function() {
+
+                    changeLanguage(
+                        this.value
+                    );
+
+                }
+            );
+
+        }
+
+
+        changeLanguage(
+            savedLanguage
+        );
+
+    }
+);
+
+
+// ==========================================
+// AI HEALTH ANALYSIS
+// ==========================================
+
+function analyzeHealth() {
+
+    const animalId =
+        document.getElementById(
+            "animalId"
+        )?.value.trim();
+
+
+    const animalType =
+        document.getElementById(
+            "animalType"
+        )?.value;
+
+
+    const symptoms =
+        document.getElementById(
+            "symptoms"
+        )?.value
+        .trim()
+        .toLowerCase();
+
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    if (!animalId) {
+
+        if (result) {
+
+            result.innerHTML =
+                "Please enter Animal ID.";
+
+        }
+
+        return;
+
+    }
+
+
+    if (!animalType) {
+
+        if (result) {
+
+            result.innerHTML =
+                "Please select Animal Type.";
+
+        }
+
+        return;
+
+    }
+
+
+    if (!symptoms) {
+
+        if (result) {
+
+            result.innerHTML =
+                "Please enter symptoms or behaviour.";
+
+        }
+
+        return;
+
+    }
+
+
+    // ======================================
+    // HIGH RISK KEYWORDS
+    // ======================================
+
+    const highRiskWords = [
+
+        "severe",
+        "blood",
+        "unable to stand",
+        "very weak",
+        "high fever",
+        "difficulty breathing",
+        "breathing problem"
+
+    ];
+
+
+    // ======================================
+    // MEDIUM RISK KEYWORDS
+    // ======================================
+
+    const mediumRiskWords = [
+
+        "fever",
+        "cough",
+        "coughing",
+        "low activity",
+        "reduced activity",
+        "loss of appetite",
+        "not eating",
+        "diarrhea",
+        "vomiting",
+        "weakness"
+
+    ];
+
+
+    let riskLevel =
+        "Low Risk";
+
+
+    let message =
+        "No major abnormal symptoms detected. Continue regular monitoring.";
+
+
+    // ======================================
+    // CHECK HIGH RISK
+    // ======================================
+
+    for (
+        let i = 0;
+        i < highRiskWords.length;
+        i++
+    ) {
+
+        if (
+            symptoms.includes(
+                highRiskWords[i]
+            )
+        ) {
+
+            riskLevel =
+                "High Risk";
+
+            message =
+                "Significant abnormal symptoms detected. Veterinary attention is recommended.";
+
+            break;
+
+        }
+
+    }
+
+
+    // ======================================
+    // CHECK MEDIUM RISK
+    // ======================================
+
+    if (
+        riskLevel === "Low Risk"
+    ) {
+
+        for (
+            let i = 0;
+            i < mediumRiskWords.length;
+            i++
+        ) {
+
+            if (
+                symptoms.includes(
+                    mediumRiskWords[i]
+                )
+            ) {
+
+                riskLevel =
+                    "Medium Risk";
+
+                message =
+                    "Some abnormal symptoms detected. Monitor the animal closely and consider veterinary consultation.";
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    // ======================================
+    // DISPLAY RESULT
+    // ======================================
+
+    if (result) {
+
+        result.innerHTML = `
+
+            <h3>
+                Health Analysis Result
+            </h3>
+
+            <p>
+                <strong>Animal ID:</strong>
+                ${animalId}
+            </p>
+
+            <p>
+                <strong>Animal Type:</strong>
+                ${animalType}
+            </p>
+
+            <p>
+                <strong>Risk Level:</strong>
+                ${riskLevel}
+            </p>
+
+            <p>
+                ${message}
+            </p>
+
+        `;
+
+    }
+
+
+    // ======================================
+    // SAVE HEALTH RECORD
+    // ======================================
+
+    const newRecord = {
+
+        id: animalId,
+
+        type: animalType,
+
+        symptoms: symptoms,
+
+        status: riskLevel,
+
+        remarks: message,
+
+        date:
+            new Date().toLocaleDateString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            )
+
+    };
+
+
+    let records =
+        JSON.parse(
+            localStorage.getItem(
+                "healthRecords"
+            )
+        ) || [];
+
+
+    // Add newest record first
+
+    records.unshift(
+        newRecord
+    );
+
+
+    // Keep latest 50 records
+
+    records =
+        records.slice(
+            0,
+            50
+        );
+
+
+    localStorage.setItem(
+        "healthRecords",
+        JSON.stringify(records)
+    );
+
+}
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "loggedIn"
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+```
