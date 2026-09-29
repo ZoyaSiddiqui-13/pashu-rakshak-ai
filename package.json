@@ -1,0 +1,16 @@
+{
+  "name":"pashu-rakshak-ai-10x",
+  "private":true,
+  "version":"3.0.0",
+  "type":"module",
+  "scripts":{
+    "install-all":"npm install && npm install --prefix frontend --legacy-peer-deps && npm install --prefix backend",
+    "dev":"concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build":"npm run build --prefix frontend",
+    "start":"npm start --prefix backend"
+  },
+  "dependencies":{
+    "bcryptjs":"^2.4.3","cors":"^2.8.5","dotenv":"^16.4.5","express":"^4.21.2","jsonwebtoken":"^9.0.2","mongoose":"^8.8.4","multer":"^1.4.5-lts.1"
+  },
+  "devDependencies":{"concurrently":"^9.1.2"}
+}

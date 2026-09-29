@@ -1,0 +1,14 @@
+import express from "express";
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
+import Farm from "../models/Farm.js";
+import Animal from "../models/Animal.js";
+import HealthRecord from "../models/HealthRecord.js";
+import {auth,requireRole} from "../middleware/auth.js";
+const router=express.Router();router.use(auth,requireRole("super_admin"));
+router.get("/summary",async(_,res)=>{const [farmers,farms,animals,records,highRisk,vets,staff]=await Promise.all([User.countDocuments({role:"farmer"}),Farm.countDocuments(),Animal.countDocuments(),HealthRecord.countDocuments(),HealthRecord.countDocuments({riskLevel:{$in:["High","Critical"]}}),User.countDocuments({role:"veterinarian"}),User.countDocuments({role:"staff"})]);res.json({farmers,farms,animals,records,highRisk,vets,staff});});
+router.get("/users",async(_,res)=>res.json(await User.find({},"-passwordHash").sort({createdAt:-1})));
+router.post("/users",async(req,res)=>{const {name,email,mobile,password,role}=req.body;if(!["veterinarian","staff"].includes(role))return res.status(400).json({message:"Admin can create staff/veterinarian accounts only"});if(await User.findOne({email:email.toLowerCase()}))return res.status(409).json({message:"Email already registered"});const user=await User.create({name,email:email.toLowerCase(),mobile,passwordHash:await bcrypt.hash(password,12),role});res.status(201).json({id:user._id,name:user.name,email:user.email,mobile:user.mobile,role:user.role,active:user.active});});
+router.patch("/users/:id/status",async(req,res)=>{const user=await User.findByIdAndUpdate(req.params.id,{active:!!req.body.active},{new:true}).select("-passwordHash");res.json(user);});
+router.get("/all",async(_,res)=>{const [users,farms,animals,cases]=await Promise.all([User.find({},"-passwordHash").sort({createdAt:-1}),Farm.find().populate("owner","name email"),Animal.find().populate("owner","name email").populate("farm","name"),HealthRecord.find().populate("owner","name email").populate("animal","tagId name species")]);res.json({users,farms,animals,cases});});
+export default router;
