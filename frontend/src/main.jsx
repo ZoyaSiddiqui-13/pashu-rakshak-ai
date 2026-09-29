@@ -23,9 +23,68 @@ function Provider(){
 function Protected({children,role}){const{user}=useAuth();if(!user)return <Navigate to="/login" replace/>;if(role&&user.role!==role)return <Navigate to={user.role==="super_admin"?"/admin":"/dashboard"} replace/>;return children}
 
 function Login(){
- const[role,setRole]=useState("farmer"),[signup,setSignup]=useState(false),[f,setF]=useState({}),[err,setErr]=useState(""),[busy,setBusy]=useState(false);const{login}=useAuth(),nav=useNavigate();
- async function submit(e){e.preventDefault();setErr("");setBusy(true);try{let d;if(role==="farmer"&&signup){if(f.password!==f.confirm)return setErr("Passwords do not match.");d=await api("/auth/register",{method:"POST",body:{name:f.name,email:f.email,mobile:f.mobile,password:f.password}})}else d=await api("/auth/login",{method:"POST",body:{email:f.email,password:f.password,role}});login(d);nav(d.user.role==="super_admin"?"/admin":"/dashboard")}catch(e){setErr(e.message)}finally{setBusy(false)}}
- return <div className="auth"><div className="authVisual"><div className="authbrand"><PawPrint size={38}/><span>PASHU-RAKSHAK <b>AI</b></span></div><div><div className="eyebrow">SMART LIVESTOCK INTELLIGENCE</div><h2>Protect every animal with better data.</h2><p>Farm management, health records, vaccination, AI early warnings and disease intelligence in one secure platform.</p></div><div className="authfeatures"><span>🔐 Secure accounts</span><span>🤖 AI early warning</span><span>📊 Live analytics</span><span>📱 Mobile ready</span></div></div><div className="authcard"><div className="mobileLogo"><PawPrint/><b>PASHU-RAKSHAK AI</b></div><div className="roleTabs"><button className={role==="farmer"?"on":""} onClick={()=>{setRole("farmer");setSignup(false)}}>👨‍🌾 Farmer</button><button className={role==="super_admin"?"on":""} onClick={()=>{setRole("super_admin");setSignup(false)}}>👑 Super Admin</button></div>{role==="farmer"&&<button className="textbtn" onClick={()=>setSignup(!signup)}>{signup?"Already registered? Login":"Create new Farmer Account"}</button>}<form onSubmit={submit}>{signup&&<><input required placeholder="Full Name" onChange={e=>setF({...f,name:e.target.value})}/><input placeholder="Mobile Number" inputMode="tel" onChange={e=>setF({...f,mobile:e.target.value})}/></>}<input required type="email" placeholder="Email" autoComplete="email" onChange={e=>setF({...f,email:e.target.value})}/><input required type="password" placeholder="Password" autoComplete={signup?"new-password":"current-password"} onChange={e=>setF({...f,password:e.target.value})}/>{signup&&<input required type="password" placeholder="Confirm Password" autoComplete="new-password" onChange={e=>setF({...f,confirm:e.target.value})}/>}<button className="primary full" disabled={busy}>{busy?"Please wait…":signup?"Create Account":"Login"}<ChevronRight size={18}/></button></form>{err&&<div className="error">{err}</div>}<small>Only Farmer and Super Admin are public login roles. Staff/Veterinarian accounts are created by Super Admin.</small></div></div>
+ const[role,setRole]=useState("farmer"),[signup,setSignup]=useState(false),[f,setF]=useState({}),[err,setErr]=useState(""),[busy,setBusy]=useState(false);
+ const{login}=useAuth(),{lang,setLang}=useLang(),nav=useNavigate();
+
+ const TX={
+  en:{farmer:"👨‍🌾 Farmer",admin:"👑 Super Admin",already:"Already registered? Login",createNew:"Create new Farmer Account",name:"Full Name",mobile:"Mobile Number",email:"Email",password:"Password",confirm:"Confirm Password",create:"Create Account",login:"Login",wait:"Please wait…",hero:"Protect every animal with better data.",sub:"Farm management, health records, vaccination, AI early warnings and disease intelligence in one secure platform.",secure:"🔐 Secure accounts",ai:"🤖 AI early warning",analytics:"📊 Live analytics",mobileReady:"📱 Mobile ready",note:"Only Farmer and Super Admin are public login roles. Staff/Veterinarian accounts are created by Super Admin.",mismatch:"Passwords do not match."},
+  hi:{farmer:"👨‍🌾 किसान",admin:"👑 सुपर एडमिन",already:"पहले से रजिस्टर हैं? लॉगिन करें",createNew:"नया किसान अकाउंट बनाएं",name:"पूरा नाम",mobile:"मोबाइल नंबर",email:"ईमेल",password:"पासवर्ड",confirm:"पासवर्ड की पुष्टि करें",create:"अकाउंट बनाएं",login:"लॉगिन",wait:"कृपया प्रतीक्षा करें…",hero:"बेहतर डेटा के साथ हर पशु की सुरक्षा करें।",sub:"फार्म प्रबंधन, स्वास्थ्य रिकॉर्ड, टीकाकरण, AI चेतावनी और रोग जानकारी एक सुरक्षित प्लेटफॉर्म पर।",secure:"🔐 सुरक्षित अकाउंट",ai:"🤖 AI शुरुआती चेतावनी",analytics:"📊 लाइव एनालिटिक्स",mobileReady:"📱 मोबाइल के लिए तैयार",note:"केवल किसान और सुपर एडमिन सार्वजनिक लॉगिन भूमिकाएं हैं। स्टाफ/पशु चिकित्सक अकाउंट सुपर एडमिन द्वारा बनाए जाते हैं।",mismatch:"पासवर्ड मेल नहीं खाते।"},
+  mr:{farmer:"👨‍🌾 शेतकरी",admin:"👑 सुपर अॅडमिन",already:"आधीच नोंदणी केली आहे? लॉगिन करा",createNew:"नवीन शेतकरी अकाउंट तयार करा",name:"पूर्ण नाव",mobile:"मोबाईल नंबर",email:"ईमेल",password:"पासवर्ड",confirm:"पासवर्डची पुष्टी करा",create:"अकाउंट तयार करा",login:"लॉगिन",wait:"कृपया प्रतीक्षा करा…",hero:"चांगल्या डेटासह प्रत्येक पशूचे संरक्षण करा.",sub:"फार्म व्यवस्थापन, आरोग्य नोंदी, लसीकरण, AI चेतावणी आणि रोग माहिती एका सुरक्षित प्लॅटफॉर्मवर.",secure:"🔐 सुरक्षित अकाउंट",ai:"🤖 AI पूर्वसूचना",analytics:"📊 लाइव्ह अॅनालिटिक्स",mobileReady:"📱 मोबाईलसाठी तयार",note:"फक्त शेतकरी आणि सुपर अॅडमिन सार्वजनिक लॉगिन भूमिका आहेत. स्टाफ/पशुवैद्यकीय अकाउंट सुपर अॅडमिन तयार करतो.",mismatch:"पासवर्ड जुळत नाहीत."}
+ };
+ const tx=TX[lang]||TX.en;
+
+ async function submit(e){
+  e.preventDefault();setErr("");setBusy(true);
+  try{
+   let d;
+   if(role==="farmer"&&signup){
+    if(f.password!==f.confirm){setErr(tx.mismatch);setBusy(false);return}
+    d=await api("/auth/register",{method:"POST",body:{name:f.name,email:f.email,mobile:f.mobile,password:f.password}})
+   }else{
+    d=await api("/auth/login",{method:"POST",body:{email:f.email,password:f.password,role}})
+   }
+   login(d);nav(d.user.role==="super_admin"?"/admin":"/dashboard")
+  }catch(e){setErr(e.message)}finally{setBusy(false)}
+ }
+
+ return <div className="auth">
+  <div style={{position:"absolute",top:22,right:28,zIndex:30,display:"flex",alignItems:"center",gap:7,background:"rgba(255,255,255,.96)",padding:"8px 12px",borderRadius:12,boxShadow:"0 6px 20px rgba(0,0,0,.10)"}}>
+   <Globe2 size={18}/>
+   <select value={lang} onChange={e=>setLang(e.target.value)} style={{border:"none",outline:"none",background:"transparent",fontSize:14,fontWeight:600,cursor:"pointer",color:"#174d38"}}>
+    <option value="en">English</option>
+    <option value="hi">हिन्दी</option>
+    <option value="mr">मराठी</option>
+   </select>
+  </div>
+
+  <div className="authVisual">
+   <div className="authbrand"><PawPrint size={38}/><span>PASHU-RAKSHAK <b>AI</b></span></div>
+   <div>
+    <div className="eyebrow">SMART LIVESTOCK INTELLIGENCE</div>
+    <h2>{tx.hero}</h2>
+    <p>{tx.sub}</p>
+   </div>
+   <div className="authfeatures"><span>{tx.secure}</span><span>{tx.ai}</span><span>{tx.analytics}</span><span>{tx.mobileReady}</span></div>
+  </div>
+
+  <div className="authcard">
+   <div className="mobileLogo"><PawPrint/><b>PASHU-RAKSHAK AI</b></div>
+   <div className="roleTabs">
+    <button className={role==="farmer"?"on":""} onClick={()=>{setRole("farmer");setSignup(false)}}>{tx.farmer}</button>
+    <button className={role==="super_admin"?"on":""} onClick={()=>{setRole("super_admin");setSignup(false)}}>{tx.admin}</button>
+   </div>
+   {role==="farmer"&&<button className="textbtn" onClick={()=>setSignup(!signup)}>{signup?tx.already:tx.createNew}</button>}
+   <form onSubmit={submit}>
+    {signup&&<><input required placeholder={tx.name} onChange={e=>setF({...f,name:e.target.value})}/><input placeholder={tx.mobile} inputMode="tel" onChange={e=>setF({...f,mobile:e.target.value})}/></>}
+    <input required type="email" placeholder={tx.email} autoComplete="email" onChange={e=>setF({...f,email:e.target.value})}/>
+    <input required type="password" placeholder={tx.password} autoComplete={signup?"new-password":"current-password"} onChange={e=>setF({...f,password:e.target.value})}/>
+    {signup&&<input required type="password" placeholder={tx.confirm} autoComplete="new-password" onChange={e=>setF({...f,confirm:e.target.value})}/>}
+    <button className="primary full" disabled={busy}>{busy?tx.wait:signup?tx.create:tx.login}<ChevronRight size={18}/></button>
+   </form>
+   {err&&<div className="error">{err}</div>}
+   <small>{tx.note}</small>
+  </div>
+ </div>
 }
 
 function useData(){const[farms,setFarms]=useState([]),[animals,setAnimals]=useState([]),[health,setHealth]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");const refresh=async()=>{setLoading(true);try{const[d1,d2,d3]=await Promise.all([api("/farms"),api("/animals"),api("/health-records")]);setFarms(d1);setAnimals(d2);setHealth(d3);setError("")}catch(e){setError(e.message)}finally{setLoading(false)}};useEffect(()=>{refresh()},[]);return{farms,animals,health,loading,error,refresh,setFarms,setAnimals,setHealth}}
